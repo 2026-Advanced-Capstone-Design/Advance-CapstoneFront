@@ -14,7 +14,7 @@ function App() {
   const [isFocused, setIsFocused] = useState(false);
   const [apiData, setApiData] = useState(null); // 백엔드에서 받은 데이터
 
-  // 탭별 플레이스홀더 설정
+  // 타입별 플레이스홀더
   const placeholders = {
     '텍스트': '텍스트를 입력하세요..',
     '이미지': '이미지를 드래그하여 업로드하세요..',
@@ -28,10 +28,8 @@ function App() {
     const scrollHeight = textareaRef.current.scrollHeight;
     
     if (isSearched && !isFocused) {
-      // 검색 후 + 포커스 아닐 때: 무조건 1줄 (약 24px)
       textareaRef.current.style.height = '24px';
     } else {
-      // 검색 전 또는 포커스 상태일 때: 최대 5줄 (약 120px) ~ 15줄(360px) 자동 조절
       const maxHeight = isSearched ? 120 : 360; 
       textareaRef.current.style.height = scrollHeight > maxHeight ? `${maxHeight}px` : `${scrollHeight}px`;
     }
@@ -42,7 +40,7 @@ function App() {
     if (inputText.trim() || selectedImage) setIsSearched(true);
   };
 
-  // 이미지 업로드 핸들러
+  // 이미지 업로드
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -125,9 +123,9 @@ function App() {
       {isSearched && (
         <main className="results-section">
           {activeTab === 'Youtube' ? (
-            <YoutubeResult data={apiData} /> // 유튜브 전용 페이지 호출
+            <YoutubeResult data={apiData} />
           ) : (
-            <GeneralResult data={apiData} type={activeTab} /> // 일반 결과 페이지 호출
+            <GeneralResult data={apiData} type={activeTab} />
           )
           }
         </main>
