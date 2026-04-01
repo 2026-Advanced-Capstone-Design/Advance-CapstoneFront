@@ -1,0 +1,294 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 기본 배경 및 레이아웃 */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #ffffff;
+  transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* --- 검색 전 (Home Mode) --- */
+.container.home {
+  justify-content: center;
+}
+.container.home .search-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 720px;
+}
+.container.home .logo {
+  font-size: 4rem;
+  font-weight: bold;
+  margin-bottom: 30px;
+  color: #1a73e8;
+}
+
+/* --- 검색 후 (Searched Mode) --- */
+.container.searched {
+  justify-content: flex-start;
+  padding-top: 20px;
+}
+.container.searched .search-wrapper {
+  flex-direction: row; /* 로고와 검색창을 가로로 */
+  align-items: flex-end;
+  width: 95%;
+  max-width: 1200px;
+  gap: 20px;
+}
+
+/* 로고 이미지 기본 스타일 */
+.logo-img {
+  display: block;
+  transition: all 0.5s ease; /* 크기 변화 애니메이션 */
+  height: auto;
+}
+
+/* --- 검색 전 (Home) 로고 크기 --- */
+.container.home .logo-img {
+  width: 700px;  /* 메인 화면에서의 로고 너비 (적절히 조절하세요) */
+  margin-bottom: 30px;
+}
+
+/* --- 검색 후 (Searched) 로고 크기 --- */
+.container.searched .logo-img {
+  width: 120px;             /* 검색 후 작아진 로고 크기 */
+}
+
+/* 로고 컨테이너 클릭 커서 설정 */
+.logo-container {
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* --- Gemini 스타일 입력창 --- */
+.input-container {
+  width: 100%;
+  background: white;
+  border-radius: 24px;
+  padding: 12px 16px;
+  box-shadow: 0 1px 6px rgba(32,33,36,.28); /* 약간 띄워진 그림자 */
+  transition: box-shadow 0.3s;
+  display: flex;
+  flex-direction: column;
+}
+
+.input-container:focus-within {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+textarea {
+  width: 100%;
+  border: none;
+  outline: none;
+  resize: none;
+  font-size: 16px;
+  line-height: 1.5;
+  max-height: 360px; /* 15줄 대략 수치 */
+  overflow-y: auto;
+  margin-bottom: 8px;
+}
+
+/* --- 입력창 하단 바 --- */
+.input-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #f0f0f0;
+  padding-top: 10px;
+}
+
+.tab-group button {
+  background: none;
+  border: none;
+  padding: 6px 12px;
+  margin-right: 5px;
+  border-radius: 15px;
+  cursor: pointer;
+  font-size: 13px;
+  color: #5f6368;
+}
+
+.tab-group button.active {
+  background: #e8f0fe;
+  color: #1a73e8;
+  font-weight: bold;
+}
+
+.search-submit-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: #1a73e8;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+/* --- 결과 섹션 --- */
+.results-section {
+  width: 100%;
+  max-width: 800px;
+  margin-top: 40px;
+  padding: 20px;
+  animation: slideUp 0.6s ease-out;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.skeleton-line {
+  height: 15px;
+  background: #f0f0f0;
+  margin-bottom: 15px;
+  border-radius: 4px;
+  width: 100%;
+}
+
+/* 기존 스타일 유지 및 추가 */
+
+.image-upload-section {
+  padding: 10px 0;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.upload-placeholder {
+  width: 120px;
+  height: 120px;
+  border: 2px dashed #ddd;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: #888;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.upload-placeholder:hover {
+  background: #f9f9f9;
+  border-color: #1a73e8;
+}
+
+.image-preview {
+  position: relative;
+  width: 120px;
+  height: 120px;
+}
+
+.image-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 1px solid #eee;
+}
+
+.remove-img {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #333;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  font-size: 10px;
+}
+
+/* 검색창 내부 텍스트영역 여백 조정 */
+textarea {
+  width: 100%;
+  border: none;
+  outline: none;
+  resize: none;
+  font-size: 16px;
+  line-height: 24px; /* 1줄 높이 명시 */
+  transition: height 0.2s ease; /* 높이 변화를 부드럽게 */
+  margin-bottom: 8px;
+}
+
+/*Searched 모드일 때 로고와 검색창 정렬 보정 */
+.container.searched .search-wrapper {
+  display: flex;
+  flex-direction: row;      /* ★ 세로에서 가로 배치로 변경 */
+  align-items: center;      /* 로고와 검색창의 세로축 중앙 맞춤 */  
+  justify-content: center;  /* 화면 중앙에 가로로 모이게 함 */
+  width: 95%;
+  max-width: 1200px;
+  gap: 20px;                /* 로고와 검색창 사이의 간격 */
+}
+
+.container.searched .logo-container {
+  margin-bottom: 0;         /* 메인 화면에서의 아래 여백 제거 */
+  flex-shrink: 0;           /* 로고 크기가 눌리지 않도록 설정 */
+}
+
+.container.searched .input-container {
+  flex-grow: 1;             /* 검색창이 남은 공간을 차지하도록 (필요시) */
+  max-width: 800px;         /* 검색창이 너무 길어지지 않게 제한 */
+}
+
+/* 검색 후 상단에 있을 때의 추가 스타일 */
+.container.searched textarea {
+  padding-top: 4px;
+}
+
+/* 1줄일 때 텍스트가 넘치면 말줄임표 느낌을 주기 위해 */
+.container.searched textarea:not(:focus) {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
