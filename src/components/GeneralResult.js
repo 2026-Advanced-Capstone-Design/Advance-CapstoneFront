@@ -2,25 +2,34 @@ import React from 'react';
 import './GeneralResult.css';
 
 function GeneralResult({ data }) {
-  // 백엔드 연동 전 임의 데이터
   const initialFact = Math.floor(Math.random() * 101);
   const initialNeutral = Math.floor(Math.random() * 101);
   const initialBias = Math.floor(Math.random() * 101);
-  
+
   const mockData = {
     title: "백엔드에서 받아온 제목 표시되는 부분",
     summary: "백엔드에서 받아온 요약이 표시되는 부분",
     score: {
-      reliability: Math.round((initialFact + initialNeutral + initialBias)/3),      // 신뢰도
-      factBased: initialFact,       // 사실 기반도
-      neutrality: initialNeutral,      // 감정적 중립도
-      bias: initialBias             // 편향도
+      reliability: Math.round((initialFact + initialNeutral + initialBias)/3),
+      factBased: initialFact,
+      neutrality: initialNeutral,
+      bias: initialBias
     },
-    content: "본문이 표시되는 부분. 텍스트 입력일 경우 텍스트를, 이미지 및 URL일 경우 아마 백에서 텍스트를 받아서 올듯."
+    content: "본문이 표시되는 부분."
   };
 
-  // 연동 시 mockData 대신 사용
-  const displayData = data || mockData;
+  // 백엔드 응답을 화면 표시 구조로 변환
+  const displayData = data ? {
+    title: data.summary?.title || '-',
+    summary: data.summary?.content || '-',
+    score: {
+      reliability: data.totalScore || 0,
+      factBased: Math.round((data.indicators?.factRatio || 0) * 100),
+      neutrality: Math.round((data.indicators?.emotionNeutrality || 0) * 100),
+      bias: Math.round((data.indicators?.biasScore || 0) * 100),
+    },
+    content: data.summary?.content || '-',
+  } : mockData;
 
   // 점수에 따른 색
   const getColor = (score) => {

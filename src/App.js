@@ -4,6 +4,8 @@ import GeneralResult from './components/GeneralResult';
 import YoutubeResult from './components/YoutubeResult';
 import logoImg from './sources/isitrealLogo.png';
 
+const BASE_URL = 'http://54.180.222.248:8080';
+
 function App() {
   const [isSearched, setIsSearched] = useState(false);
   const [inputText, setInputText] = useState('');
@@ -13,6 +15,8 @@ function App() {
   const fileInputRef = useRef(null);
   const [isFocused, setIsFocused] = useState(false);
   const [apiData, setApiData] = useState(null); // 백엔드에서 받은 데이터
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   // 타입별 플레이스홀더
   const placeholders = {
@@ -36,8 +40,79 @@ function App() {
   }
 }, [inputText, isSearched, isFocused]);
 
-  const handleSearch = () => {
-    if (inputText.trim() || selectedImage) setIsSearched(true);
+  const pollStatus = async (articleId) => {
+    return new Promise((resolve, reject) => {
+      const interval = setInterval(async () => {
+        try {
+          const res = await fetch(`${BASE_URL}/api/v1/articles/${articleId}/status`);
+          const json = await res.json();
+          if (json.data.status === 'COMPLETED') {
+            clearInterval(interval);
+            resolve();
+          } else if (json.data.status === 'FAILED') {
+            clearInterval(interval);
+            reject(new Error('분석에 실패했습니다.'));
+          }
+        } catch (e) {
+          clearInterval(interval);
+          reject(e);
+        }
+      }, 2000);
+    });
+  };
+
+  const handleSearch = async () => {
+    if (!inputText.trim() && !selectedImage) return;
+
+    setIsLoading(true);
+    setError(null);
+    setApiData(null);
+
+    try {
+      let articleId;
+
+      if (activeTab === '텍스트') {
+        const res = await fetch(`${BASE_URL}/api/v1/articles/analyze/text`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text: inputText }),
+        });
+        const json = await res.json();
+        articleId = json.data.articleId;
+
+      } else if (activeTab === 'URL') {
+        const res = await fetch(`${BASE_URL}/api/v1/articles/analyze/url`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url: inputText }),
+        });
+        const json = await res.json();
+        articleId = json.data.articleId;
+
+      } else if (activeTab === '이미지' && selectedImage) {
+        const fileInput = fileInputRef.current;
+        const formData = new FormData();
+        formData.append('image', fileInput.files[0]);
+        const res = await fetch(`${BASE_URL}/api/v1/articles/analyze/image`, {
+          method: 'POST',
+          body: formData,
+        });
+        const json = await res.json();
+        articleId = json.data.articleId;
+      }
+
+      setIsSearched(true);
+      await pollStatus(articleId);
+
+      const resultRes = await fetch(`${BASE_URL}/api/v1/articles/${articleId}/result`);
+      const resultJson = await resultRes.json();
+      setApiData(resultJson.data);
+
+    } catch (e) {
+      setError(e.message || '오류가 발생했습니다.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // 이미지 업로드
@@ -122,12 +197,15 @@ function App() {
 
       {isSearched && (
         <main className="results-section">
-          {activeTab === 'Youtube' ? (
-            <YoutubeResult data={apiData} />
-          ) : (
-            <GeneralResult data={apiData} type={activeTab} />
-          )
-          }
+          {isLoading && <p style={{textAlign:'center', marginTop:'2rem'}}>분석 중입니다...</p>}
+          {error && <p style={{textAlign:'center', color:'red', marginTop:'2rem'}}>{error}</p>}
+          {!isLoading && !error && (
+            activeTab === 'Youtube' ? (
+              <YoutubeResult data={apiData} />
+            ) : (
+              <GeneralResult data={apiData} type={activeTab} />
+            )
+          )}
         </main>
       )}
     </div>
