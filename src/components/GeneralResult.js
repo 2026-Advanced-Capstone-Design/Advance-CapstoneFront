@@ -28,7 +28,7 @@ function GeneralResult({result_Id}) {
 
   // 연동 시 mockData 대신 사용
   const displayData = data || mockData;
-/*
+
   useEffect(() => {
     // 데이터 요청 함수
     const fetchData = async () => {
@@ -61,7 +61,7 @@ function GeneralResult({result_Id}) {
   if (error) {
     return <div>데이터를 불러오는 중 오류가 발생했습니다: {error.message}</div>;
   }
-  */
+  
   // 점수에 따른 색
   const getColor = (score) => {
     if (score >= 65) return '#1a73e8';

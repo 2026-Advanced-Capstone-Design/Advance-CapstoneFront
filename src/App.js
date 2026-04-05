@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import './App.css';
 import GeneralResult from './components/GeneralResult';
 import YoutubeResult from './components/YoutubeResult';
-import logoImg from './sources/isitrealLogo.png';
+import logoImg from './sources/newslensLogo.png';
 import axios from 'axios';
 
 function App() {
@@ -63,9 +63,8 @@ const handleSearch = async () => {
     // 스프링 부트 서버로 데이터 전송
     const formattedTab = tabtoApi[activeTab];
 
-    const response = await axios.post('http://13.125.114.157:8080/api/v1/articles/analyze/${formattedTab}', {
-      inputType: tabtoInputType[activeTab],
-      text: inputText 
+    const response = await axios.post('https://matterless-unevocative-maddie.ngrok-free.dev/api/youtube/comments/texts', {
+      youtubeUrl : inputText
     });
 
     // 서버에서 받은 데이터를 상태에 저장
@@ -163,7 +162,7 @@ const handleSearch = async () => {
           {activeTab === 'Youtube' ? (
             <YoutubeResult data={apiData} />
           ) : (
-            <GeneralResult data={apiData} type={activeTab} />
+            <GeneralResult result_Id={apiData} type={activeTab} />
           )
           }
         </main>
