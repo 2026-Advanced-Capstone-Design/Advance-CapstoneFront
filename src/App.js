@@ -3,6 +3,7 @@ import './App.css';
 import GeneralResult from './components/GeneralResult';
 import YoutubeResult from './components/YoutubeResult';
 import logoImg from './sources/isitrealLogo.png';
+import axios from 'axios';
 
 function App() {
   const [isSearched, setIsSearched] = useState(false);
@@ -36,9 +37,46 @@ function App() {
   }
 }, [inputText, isSearched, isFocused]);
 
-  const handleSearch = () => {
-    if (inputText.trim() || selectedImage) setIsSearched(true);
-  };
+const tabtoInputType = {
+  '텍스트' : 'TEXT',
+  '이미지' : 'IMAGE',
+  'URL' : 'URL'
+};
+const tabtoApi = {
+  '텍스트' : 'text',
+  '이미지' : 'image',
+  'URL' : 'url'
+};
+
+const handleSearch = async () => {
+  // 텍스트가 없거나 이미지도 없는 경우 방지
+  if (!inputText.trim() && !selectedImage) {
+    alert("내용을 입력해주세요!");
+    return;
+  }
+
+  // 검색 상태 활성화 (결과 섹션 표시)
+  setIsSearched(true);
+  setApiData(null); // 이전 결과 초기화
+
+  try {
+    // 스프링 부트 서버로 데이터 전송
+    const formattedTab = tabtoApi[activeTab];
+
+    const response = await axios.post('http://13.125.114.157:8080/api/v1/articles/analyze/${formattedTab}', {
+      inputType: tabtoInputType[activeTab],
+      text: inputText 
+    });
+
+    // 서버에서 받은 데이터를 상태에 저장
+    setApiData(response.data);
+
+  } catch (error) {
+    console.error("데이터 요청 중 에러 발생:", error);
+    // 에러 발생 시 처리 (예: 에러 상태값 설정 등)
+    setApiData({ error: "데이터를 불러오는데 실패했습니다." });
+  }
+};
 
   // 이미지 업로드
   const handleImageChange = (e) => {

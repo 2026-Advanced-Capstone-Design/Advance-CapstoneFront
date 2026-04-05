@@ -1,7 +1,14 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { BeatLoader } from "react-spinners";
 import './GeneralResult.css';
 
-function GeneralResult({ data }) {
+function GeneralResult({result_Id}) {
+
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   // 백엔드 연동 전 임의 데이터
   const initialFact = Math.floor(Math.random() * 101);
   const initialNeutral = Math.floor(Math.random() * 101);
@@ -21,7 +28,40 @@ function GeneralResult({ data }) {
 
   // 연동 시 mockData 대신 사용
   const displayData = data || mockData;
+/*
+  useEffect(() => {
+    // 데이터 요청 함수
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        // 서버의 API 엔드포인트 주소 입력
+        const response = await axios.get('http://13.125.114.157:8080/api/v1/articles/${result_Id}/result');
+        
+        // 서버 응답 데이터 저장 (mockData 형식과 일치해야 함)
+        setData(response.data);
+      } catch (e) {
+        setError(e);
+        console.error("데이터를 불러오는데 실패했습니다:", e);
+      } finally {
+        setLoading(false);
+      }
+    };
 
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return (
+      <div style={loadingContainerStyle}>
+        <div className="spinner"><BeatLoader /></div>
+        <p>데이터를 분석하고 있습니다. 잠시만 기다려 주세요...</p>
+      </div>
+    );
+  }
+  if (error) {
+    return <div>데이터를 불러오는 중 오류가 발생했습니다: {error.message}</div>;
+  }
+  */
   // 점수에 따른 색
   const getColor = (score) => {
     if (score >= 65) return '#1a73e8';
@@ -64,6 +104,9 @@ function GeneralResult({ data }) {
       {/* 본문 섹션 */}
       <article className="content-body">
         {displayData.content}
+        <pre style={{ backgroundColor: '#f4f4f4', padding: '10px'}}>
+          {JSON.stringify(result_Id, null, 2)}
+        </pre>
       </article>
     </div>
   );
@@ -81,5 +124,15 @@ function ScoreBar({ label, score, color }) {
     </div>
   );
 }
+
+const loadingContainerStyle = {
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  alignItems: 'center',
+  height: '100vh',
+  fontSize: '1.2rem'
+};
+
 
 export default GeneralResult;
