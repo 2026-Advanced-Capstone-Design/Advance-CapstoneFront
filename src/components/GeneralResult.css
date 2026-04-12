@@ -104,9 +104,43 @@
   margin: 40px 0;
 }
 
+/* 하이라이트 공통 스타일 */
+.highlight {
+  padding: 2px 0;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+/* 초록색 형광펜 (Positive / 사실) */
+.highlight.pos {
+  background-color: rgba(40, 167, 69, 0.3); /* 연한 초록색 */
+  border-bottom: 2px solid rgba(40, 167, 69, 0.5);
+}
+
+.highlight.pos:hover {
+  background-color: rgba(40, 167, 69, 0.5); /* 마우스 올리면 더 진하게 */
+  box-shadow: 0 0 8px rgba(40, 167, 69, 0.2);
+}
+
+/* 빨간색 형광펜 (Negative / 편향/오류) */
+.highlight.neg {
+  background-color: rgba(220, 53, 69, 0.3); /* 연한 빨간색 */
+  border-bottom: 2px solid rgba(220, 53, 69, 0.5);
+}
+
+.highlight.neg:hover {
+  background-color: rgba(220, 53, 69, 0.5); /* 마우스 올리면 더 진하게 */
+  box-shadow: 0 0 8px rgba(220, 53, 69, 0.2);
+}
+
 /* 본문 */
 .content-body {
-  font-size: 1.05rem;
-  line-height: 1.8;
+  font-size: 1.1rem;
+  line-height: 2.2;
   white-space: pre-wrap;
+  color: #2c3e50;
+  padding: 20px;
+  background: #ffffff;
 }

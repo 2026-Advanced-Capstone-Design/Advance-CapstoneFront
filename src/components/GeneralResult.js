@@ -3,6 +3,8 @@ import axios from 'axios';
 import { BeatLoader } from "react-spinners";
 import './GeneralResult.css';
 
+const BASE_URL = 'http://54.180.222.248:8080';
+
 function GeneralResult({result_Id}) {
 
   const [data, setData] = useState(null);
@@ -23,7 +25,12 @@ function GeneralResult({result_Id}) {
       neutrality: initialNeutral,
       bias: initialBias
     },
-    content: "본문이 표시되는 부분."
+    content: "최근 인공지능 기술은 급격하게 발전하고 있습니다. 하지만 개인정보 유출 문제는 여전히 해결되지 않은 숙제입니다. 데이터의 투명성을 확보하는 것이 무엇보다 중요합니다.",
+    highlights: [
+      { text: "급격하게 발전", type: "pos" },   // 초록색 (긍정/사실 등)
+      { text: "개인정보 유출 문제", type: "neg" }, // 빨간색 (부정/오류 등)
+      { text: "투명성을 확보", type: "pos" }
+    ]
   };
 
   // 백엔드 응답을 화면 표시 구조로 변환
@@ -39,13 +46,14 @@ function GeneralResult({result_Id}) {
     content: data.summary?.content || '-',
   } : mockData;
 
+  /*
   useEffect(() => {
     // 데이터 요청 함수
     const fetchData = async () => {
       try {
         setLoading(true);
         // 서버의 API 엔드포인트 주소 입력
-        const response = await axios.get(`http://54.180.222.248:8080/api/v1/articles/${result_Id}/result`);
+        const response = await axios.get(`${BASE_URL}/api/v1/articles/${result_Id}/result`);
 
         // 서버 응답 데이터 저장 (mockData 형식과 일치해야 함)
         setData(response.data);
@@ -71,12 +79,41 @@ function GeneralResult({result_Id}) {
   if (error) {
     return <div>데이터를 불러오는 중 오류가 발생했습니다: {error.message}</div>;
   }
+  */
 
   // 점수에 따른 색
   const getColor = (score) => {
     if (score >= 65) return '#1a73e8';
     if (score >= 35) return '#f9ab00';
     return '#ea4335';
+  };
+
+  // 본문 텍스트를 하이라이트 태그로 변환하는 함수
+  const renderHighlightedContent = () => {
+    let content = displayData.content;
+    if (!displayData.highlights || displayData.highlights.length === 0) return content;
+
+    // 하이라이트 텍스트들을 정규식 패턴으로 만듦
+    const patterns = displayData.highlights.map(h => h.text).join('|');
+    const regex = new RegExp(`(${patterns})`, 'g');
+
+    // 텍스트를 쪼갠 후 매칭되는 부분만 <span>으로 감쌈
+    return content.split(regex).map((part, index) => {
+      const highlight = displayData.highlights.find(h => h.text === part);
+      
+      if (highlight) {
+        return (
+          <span 
+            key={index} 
+            className={`highlight ${highlight.type === 'pos' ? 'pos' : 'neg'}`}
+            title={highlight.type === 'pos' ? '신뢰할 수 있는 부분' : '주의가 필요한 부분'}
+          >
+            {part}
+          </span>
+        );
+      }
+      return part;
+    });
   };
 
   return (
@@ -113,7 +150,7 @@ function GeneralResult({result_Id}) {
 
       {/* 본문 섹션 */}
       <article className="content-body">
-        {displayData.content}
+        {renderHighlightedContent()}
         <pre style={{ backgroundColor: '#f4f4f4', padding: '10px'}}>
           {JSON.stringify(result_Id, null, 2)}
         </pre>
