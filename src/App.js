@@ -3,6 +3,7 @@ import './App.css';
 import GeneralResult from './components/GeneralResult';
 import YoutubeResult from './components/YoutubeResult';
 import logoImg from './sources/image.png';
+import mainImg from './sources/newslensLogo.png';
 import axios from 'axios';
 
 const BASE_URL = 'http://54.180.222.248:8080';
@@ -139,10 +140,15 @@ const handleSearch = async () => {
             onClick={() => window.location.reload()}
       >
         <img src={logoImg} alt="Logo" className="h-16 mr-2" /> 
+
       </div>
     
       {/* 검색 바 영역: 상단에 고정되거나 홈 중앙에 위치 */}
       <header className={"search-wrapper"}>
+        <div className="logo-container" onClick={() => window.location.reload()} style={{cursor:'pointer'}}>
+          <img src={mainImg} alt="Is It Real Logo" className="logo-img" />
+        </div>
+
           <div className="mb-8 cursor-pointer" onClick={() => window.location.reload()}>
             {isSearched ? null : (
               <span className='logo-text-large'>

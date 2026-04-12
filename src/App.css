@@ -80,7 +80,8 @@
 .logo-img {
   display: block;
   transition: all 0.5s ease;
-  height: auto;
+  height: 50%;
+  width: 50%;
 }
 .container.home .logo-img {
   width: 700px;
