@@ -41,27 +41,6 @@ function App() {
   }
 }, [inputText, isSearched, isFocused]);
 
-const pollStatus = async (articleId) => {
-  return new Promise((resolve, reject) => {
-    const interval = setInterval(async () => {
-      try {
-        const res = await axios.get(`${BASE_URL}/api/v1/articles/${articleId}/status`);
-        const status = res.data.data.status ;
-        if (status === 'COMPLETED') {
-          clearInterval(interval);
-          resolve();
-        } else if (status === 'FAILED') {
-          clearInterval(interval);
-          reject(new Error('분석에 실패했습니다.'));
-        }
-      } catch (e) {
-        clearInterval(interval);
-        reject(e);
-      }
-    }, 2000);
-  });
-};
-
 const tabtoInputType = {
   '텍스트' : 'TEXT',
   '이미지' : 'IMAGE',
@@ -83,7 +62,7 @@ const handleSearch = async () => {
     if (activeTab === 'Youtube') {
       // Youtube는 ngrok 서버로
       setIsSearched(true);
-      const res = await axios.post('https://matterless-unevocative-maddie.ngrok-free.dev/api/youtube/comments/texts', {
+      const res = await axios.post(`${BASE_URL}/api/youtube/analysis`, {
         youtubeUrl : inputText
       });
       setApiData(res.data);
@@ -106,6 +85,18 @@ const handleSearch = async () => {
       //await pollStatus(articleId);
       setApiData(articleId); // articleId를 GeneralResult로 전달
     }
+  } catch (error) {
+    console.error("데이터 요청 중 에러 발생:", error);
+    setApiData({ error: "데이터를 불러오는데 실패했습니다." });
+  }
+};
+
+const testSearch = async () => {
+  setApiData(null); // 이전 결과 초기화
+
+  try {
+    const res = await axios.get(`${BASE_URL}/api/v1/articles/50/result`);
+    setApiData(res.data);
   } catch (error) {
     console.error("데이터 요청 중 에러 발생:", error);
     setApiData({ error: "데이터를 불러오는데 실패했습니다." });
@@ -200,7 +191,13 @@ const handleSearch = async () => {
               <button className="search-submit-btn" onClick={handleSearch}>
                 <span className="magnifier">🔍</span>
               </button>
+              <button className="search-submit-btn" onClick={testSearch}>
+                <span className="magnifier">테스트용</span>
+              </button>
             </div>
+            <pre style={{ backgroundColor: '#f4f4f4', padding: '10px'}}>
+              {JSON.stringify(apiData, null, 2)}
+            </pre>
           </div>
       </header>
 
@@ -210,7 +207,7 @@ const handleSearch = async () => {
           {renderedTab === 'Youtube' ? (
             <YoutubeResult data={apiData} />
           ) : (
-            <GeneralResult result_Id={apiData} type={activeTab} />
+            <GeneralResult result_Id={apiData} inputText={inputText} type={activeTab} />
           )
           }
         </main>

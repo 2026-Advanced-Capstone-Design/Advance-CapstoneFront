@@ -12,8 +12,29 @@ const YoutubeResult = ({ result_id }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const displayData = data && !data.error ? data : {
+  const displayData = data && !data.error ? {
     videoInfo: {
+      thumbnail: null,
+      title: data.result.videoTitle,
+
+    },
+    sentiment: {
+      positive: data.result.positive,
+      neutral: data.result.neutral,
+      negative: data.result.negative
+    },
+    botDetection: {
+      totalComments: data.result.total,
+      suspiciousBots: data.result.botCount,
+      botPercentage: data.result.botPct
+    },
+    summary: {
+      positive: data.result.summary,
+      neutral:  data.result.summary,
+      negative:  data.result.summary
+    }
+  } : {
+    videoInfo: {  //mockData
       thumbnail: null,
       title: "백엔드에서 영상 제목을 받아야 함",
       channel: "백엔드에서 채널명을 받아야 함",
@@ -34,17 +55,28 @@ const YoutubeResult = ({ result_id }) => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`${BASE_URL}/api/v1/articles/${result_id}/result`);
-        // 서버 응답 데이터 저장 (mockData 형식과 일치해야 함)
-        setData(response.data);
+        const response = await axios.get(`${BASE_URL}/api/youtube/analysis/${result_id}`);
+
+        if (response.status === 200) {
+          setData(response.data);
+          setLoading(false);
+        }
       } catch (e) {
-        setError(e);
-        console.error("데이터를 불러오는데 실패했습니다:", e);
-      } finally {
-        setLoading(false);
+        if (e.response && e.response.status === 404) {
+          console.log("분석 진행 중 (3초 간격)");
+          timer = setTimeout(fetchData, 3000);
+        } else {
+          setError(e);
+          console.error("데이터를 불러오는데 실패했습니다:", e);
+          setLoading(false);
+        } 
       }
     };
     fetchData();
+
+    return () => {
+      if (timer) clearTimeout(timer);
+    }
   }, [result_Id]);
 
   if (loading) {

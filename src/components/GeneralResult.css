@@ -1,9 +1,74 @@
-.result-container {
+/* 전체 레이아웃 */
+.result-page-wrapper {
+  display: flex;
+  position: relative;
+  justify-content: center;
   width: 100%;
+}
+
+/* 좌측 완전 고정 네비게이션 */
+.fixed-side-nav {
+  position: fixed;
+  left: 40px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 60px;
+  padding: 40px 10px;
+  z-index: 1000;
+}
+
+/* 길게 늘어진 수직 연결선 */
+.nav-vertical-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(
+    to bottom, 
+    transparent, 
+    #e8eaed 10%, 
+    #e8eaed 90%, 
+    transparent
+  );
+  z-index: -1;
+}
+
+/* 네비게이션 아이템 스타일 강화 */
+.nav-item {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 2px solid #e8eaed;
+  background: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+/* 활성 상태 (강조 효과 증가) */
+.nav-item.active {
+  border-color: #1a73e8;
+  background-color: #ffffff;
+  transform: scale(1.2) translateX(5px); /* 활성화 시 오른쪽으로 살짝 튀어나옴 */
+  box-shadow: 0 10px 20px rgba(26, 115, 232, 0.15);
+}
+
+.nav-item.active .nav-icon {
+  transform: scale(1.1);
+}
+
+/* 메인 컨테이너 여백 조정 */
+.result-container {
+  margin-left: 140px; /* 네비게이션 바 공간 확보 */
+  width: calc(100% - 180px);
   max-width: 900px;
-  margin: 0 auto;
-  padding: 20px;
-  color: #3c4043;
+  padding-bottom: 100px;
 }
 
 /* 제목 및 요약 */
@@ -143,6 +208,60 @@
   color: #2c3e50;
   padding: 20px;
   background: #ffffff;
+}
+
+/* 출처 관련*/
+.source-section {
+  margin-top: 15px;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  border: 1px solid #eef0f2;
+}
+.source-header {
+  margin-bottom: 12px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 8px;
+}
+.source-label {
+  font-weight: 700;
+  color: #3c4043;
+  font-size: 0.9rem;
+}
+.source-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px; /* 출처 사이 간격 */
+}
+.source-item {
+  display: flex;
+  align-items: flex-start;
+}
+.source-index {
+  margin-right: 8px;
+  font-weight: bold;
+  color: #bdc1c6;
+}
+.source-link {
+  font-size: 0.95rem;
+  line-height: 1.4;
+  word-break: break-all;
+}
+.source-link.active {
+  color: #1a73e8;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.source-link.active:hover {
+  text-decoration: underline;
+  color: #174ea6;
+}
+.source-link.disabled {
+  color: #70757a;
+  cursor: default;
 }
 
 /* 피드백 관련 */
