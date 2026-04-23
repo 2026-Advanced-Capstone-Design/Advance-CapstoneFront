@@ -62,7 +62,7 @@ const handleSearch = async () => {
     if (activeTab === 'Youtube') {
       // Youtube는 ngrok 서버로
       setIsSearched(true);
-      const res = await axios.post(`${BASE_URL}/api/youtube/analysis`, {
+      const res = await axios.post(`{BASE_URL}/api/youtube/analysis`, {
         youtubeUrl : inputText
       });
       setApiData(res.data);
@@ -95,7 +95,7 @@ const testSearch = async () => {
   setApiData(null); // 이전 결과 초기화
 
   try {
-    const res = await axios.get(`${BASE_URL}/api/v1/articles/50/result`);
+    const res = await axios.get(`${BASE_URL}/api/v1/articles/12/result`);
     setApiData(res.data);
   } catch (error) {
     console.error("데이터 요청 중 에러 발생:", error);
@@ -205,7 +205,7 @@ const testSearch = async () => {
       {isSearched && (
         <main className="results-section">
           {renderedTab === 'Youtube' ? (
-            <YoutubeResult data={apiData} />
+            <YoutubeResult data={apiData} youtubeUrl={inputText}/>
           ) : (
             <GeneralResult result_Id={apiData} inputText={inputText} type={activeTab} />
           )

@@ -55,10 +55,11 @@ function GeneralResult({result_Id, inputText}) {
     title: data.title || '-',
     summary: data.summary || '-',
     score: {
-      reliability: data.total_score || 0,
-      factBased: Math.round((data.fact_ratio || 0) * 100),
-      neutrality: Math.round((data.emotion_neutrality || 0) * 100),
-      bias: Math.round((data.bias_score || 0) * 100),
+      reliability: data.totalScore || 0,
+      factBased: Math.round((data.indicators.factRatio || 0) * 100),
+      neutrality: Math.round((data.indicators.emotionNeutrality || 0) * 100),
+      sourceBalance: Math.round((data.indicators.sourceBalance || 0) * 100),
+      bias: Math.round((data.indicators.biasScore || 0) * 100)
     },
     content: inputText || '-',
     highlights: [
@@ -70,48 +71,48 @@ function GeneralResult({result_Id, inputText}) {
   } : mockData;
 
   
-  useEffect(() => {
-    let timer;
+  // useEffect(() => {
+  //   let timer;
 
-    // 데이터 요청 함수
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const response = await axios.get(`${BASE_URL}/api/v1/articles/${result_Id}/result`);
+  //   // 데이터 요청 함수
+  //   const fetchData = async () => {
+  //     try {
+  //       setLoading(true);
+  //       const response = await axios.get(`${BASE_URL}/api/v1/articles/${result_Id}/result`);
 
-        if (response.status === 200) {
-          setData(response.data);
-          setLoading(false);
-        }
-      } catch (e) {
-        if (e.response && e.response.status === 404) {
-          console.log("분석 진행 중 (3초 간격)");
-          timer = setTimeout(fetchData, 3000);
-        } else {
-          setError(e);
-          console.error("데이터를 불러오는데 실패했습니다:", e);
-          setLoading(false);
-        } 
-      }
-    };
-    fetchData();
+  //       if (response.status === 200) {
+  //         setData(response.data);
+  //         setLoading(false);
+  //       }
+  //     } catch (e) {
+  //       if (e.response && e.response.status === 404) {
+  //         console.log("분석 진행 중 (3초 간격)");
+  //         timer = setTimeout(fetchData, 3000);
+  //       } else {
+  //         setError(e);
+  //         console.error("데이터를 불러오는데 실패했습니다:", e);
+  //         setLoading(false);
+  //       } 
+  //     }
+  //   };
+  //   fetchData();
 
-    return () => {
-      if (timer) clearTimeout(timer);
-    }
-  }, [result_Id]);
+  //   return () => {
+  //     if (timer) clearTimeout(timer);
+  //   }
+  // }, [result_Id]);
 
-  if (loading) {
-    return (
-      <div style={loadingContainerStyle}>
-        <div className="spinner"><BeatLoader /></div>
-        <p>데이터를 분석하고 있습니다. 잠시만 기다려 주세요...</p>
-      </div>
-    );
-  }
-  if (error) {
-    return <div>데이터를 불러오는 중 오류가 발생했습니다: {error.message}</div>;
-  }
+  // if (loading) {
+  //   return (
+  //     <div style={loadingContainerStyle}>
+  //       <div className="spinner"><BeatLoader /></div>
+  //       <p>데이터를 분석하고 있습니다. 잠시만 기다려 주세요...</p>
+  //     </div>
+  //   );
+  // }
+  // if (error) {
+  //   return <div>데이터를 불러오는 중 오류가 발생했습니다: {error.message}</div>;
+  // }
   
 
   // 점수에 따른 색
