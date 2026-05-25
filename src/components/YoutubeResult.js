@@ -24,7 +24,10 @@ const YoutubeResult = ({ result_Id, youtubeUrl }) => {
     sentiment: {
       positive: data.result.positive,
       neutral: data.result.neutral,
-      negative: data.result.negative
+      negative: data.result.negative,
+      totalComments: data.result.total,
+      suspiciousBots: data.result.botCount,
+      botPercentage: data.result.botPct
     },
     botDetection: {
       totalComments: data.result.total,
@@ -186,29 +189,17 @@ const YoutubeResult = ({ result_Id, youtubeUrl }) => {
       </div>
 
       {/* 댓글 봇 탐지 */}
-      <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 w-full">
+      {/* <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 w-full">
         <h3 className="text-lg font-bold mb-6 flex items-center gap-2">
           <span className="text-blue-500">🤖</span> 댓글 봇 탐지 분석
         </h3>
         <BotDetection data={displayData.botDetection} />
-      </div>
+      </div> */}
 
       {/* AI 감정별 요약 */}
-      <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 w-full">
-        <h3 className="text-lg font-bold mb-6 flex items-center gap-2">
-          <span className="text-purple-500"></span> AI 감정별 요약
-        </h3>
-        <SentimentSummary data={displayData.summary} />
-      </div>
+      <SentimentSummary data={displayData.summary} />
 
-      
-
-      <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 w-full">
-        <h3 className="text-lg font-bold mb-6 flex items-center gap-2">
-          <span className="text-blue-500">📑</span> 댓글 리스트
-        </h3>
-        <CommentList comments={displayData.comments} />
-      </div>
+      <CommentList comments={displayData.comments} />
     </div>
   );
 };
