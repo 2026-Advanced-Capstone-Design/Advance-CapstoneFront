@@ -179,13 +179,21 @@ const YoutubeResult = ({ result_Id, youtubeUrl }) => {
         </div>
       </div>
 
-      {/* 2단: 댓글 감정 분석 차트 (가로 꽉 채우기) */}
+      {/* 댓글 감정 분석 차트 (가로 꽉 채우기) */}
       <div className="w-full">
         <h3 className="text-lg font-bold mb-4 text-slate-800">댓글 감정 분석</h3>
         <SentimentChart data={displayData.sentiment} />
       </div>
 
-      {/* 3단: AI 감정별 요약 */}
+      {/* 댓글 봇 탐지 */}
+      <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 w-full">
+        <h3 className="text-lg font-bold mb-6 flex items-center gap-2">
+          <span className="text-blue-500">🤖</span> 댓글 봇 탐지 분석
+        </h3>
+        <BotDetection data={displayData.botDetection} />
+      </div>
+
+      {/* AI 감정별 요약 */}
       <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 w-full">
         <h3 className="text-lg font-bold mb-6 flex items-center gap-2">
           <span className="text-purple-500"></span> AI 감정별 요약
@@ -193,13 +201,7 @@ const YoutubeResult = ({ result_Id, youtubeUrl }) => {
         <SentimentSummary data={displayData.summary} />
       </div>
 
-      {/* 4단: 댓글 봇 탐지 */}
-      <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 w-full">
-        <h3 className="text-lg font-bold mb-6 flex items-center gap-2">
-          <span className="text-blue-500">🤖</span> 댓글 봇 탐지 분석
-        </h3>
-        <BotDetection data={displayData.botDetection} />
-      </div>
+      
 
       <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 w-full">
         <h3 className="text-lg font-bold mb-6 flex items-center gap-2">
